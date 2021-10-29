@@ -58,7 +58,7 @@ public class ChapterUtils {
             return null;
     }
     
-    public List<String> getChaptersinPage(URL baseUrl,Integer page) throws MalformedURLException, IOException{
+    public static List<String> getChaptersinPage(URL baseUrl,Integer page) throws MalformedURLException, IOException{
         URL url = new URL(baseUrl,"/api/novels/"+NOVELA+"/chapters?page="+page);
             URLConnection con = url.openConnection();
             String body;
