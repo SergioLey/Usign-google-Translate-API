@@ -27,7 +27,7 @@ import org.apache.commons.io.IOUtils;
  */
 public class ChapterUtils {
     final static private String NOVELA = "my-vampire-system"; 
-    final static private String TRANSALTE_URL = "https://script.google.com/macros/s/AKfycbwHSM-dVGMeu6VileKHamXLxf_U_qeyMNqov4thMMGzucDczqDw/exec"; 
+    final static private String TRANSALTE_URL = "your google translate api direction"; 
     
     private URL baseUrl;
 
