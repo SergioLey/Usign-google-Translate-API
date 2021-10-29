@@ -27,8 +27,8 @@ import org.apache.commons.io.IOUtils;
  */
 public class ChapterUtils {
     final static private String NOVELA = "my-vampire-system"; 
-    final static private String TRANSALTE_URL = "your google translate api direction"; 
-    
+    final static private String TRANSALTE_URL = "https://script.google.com/macros/s/AKfycbwHSM-dVGMeu6VileKHamXLxf_U_qeyMNqov4thMMGzucDczqDw/exec"; 
+
     private URL baseUrl;
 
     public ChapterUtils(URL baseUrl) {
@@ -58,7 +58,7 @@ public class ChapterUtils {
             return null;
     }
     
-    public List<String> getChaptersinPage(Integer page) throws MalformedURLException, IOException{
+    public List<String> getChaptersinPage(URL baseUrl,Integer page) throws MalformedURLException, IOException{
         URL url = new URL(baseUrl,"/api/novels/"+NOVELA+"/chapters?page="+page);
             URLConnection con = url.openConnection();
             String body;
@@ -135,21 +135,25 @@ public class ChapterUtils {
         return IOUtils.toString(in, encoding);
     }
     
-    public List<String> translate(String langFrom, String langTo, List<String> chapter) throws IOException {
+    public List<String> translate(String langFrom, String langTo, List<String> chapter)  {
          List<String> result = new ArrayList<>();
          for (String string : chapter) {
              if(!string.isEmpty()){
-                 String  translated =translate(langFrom, langTo, string);
-                //ok thats all.... but what if something just going wrong?
-                Boolean badTranslation =  translated.contains("img alt=\"Google Apps Script\"");//google just send a error
-                int i = 0;
-                while(badTranslation){
-                    //just try n times more
-                    translated =translate(langFrom, langTo, string);
-                    badTranslation =  translated.contains("img alt=\"Google Apps Script\"")||i>3;
-                    i++;
-                }
-                result.add(translated.replace("&quot;", "\""));
+                 try {
+                     String  translated =translate(langFrom, langTo, string);
+                     //ok thats all.... but what if something just going wrong?
+                     Boolean badTranslation =  translated.contains("img alt=\"Google Apps Script\"");//google just send a error
+                     int i = 0;
+                     while(badTranslation){
+                         //just try n times more
+                         translated =translate(langFrom, langTo, string);
+                         badTranslation =  translated.contains("img alt=\"Google Apps Script\"")||i>3;
+                         i++;
+                     }
+                     result.add(translated.replace("&quot;", "\""));
+                 } catch (IOException ex) {
+                     Logger.getLogger(ChapterUtils.class.getName()).log(Level.SEVERE, null, ex);
+                 }
              }
              
          }

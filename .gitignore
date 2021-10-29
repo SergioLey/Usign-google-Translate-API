@@ -1,0 +1,7 @@
+
+nbactions.xml
+target/classes/com/mycompany/pruebaslocas/Controller/ChapterUtils.class
+target/classes/com/mycompany/pruebaslocas/Main.class
+target/classes/com/mycompany/pruebaslocas/Model/ChapterManager.class
+target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst

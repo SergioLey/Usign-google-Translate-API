@@ -5,6 +5,7 @@
  */
 package com.mycompany.pruebaslocas;
 
+import com.mycompany.pruebaslocas.Controller.ChapterThread;
 import com.mycompany.pruebaslocas.Controller.ChapterUtils;
 import com.mycompany.pruebaslocas.Model.ChapterManager;
 import java.io.File;
@@ -38,18 +39,12 @@ public class Main {
     public static void main(String[] args) throws MalformedURLException, IOException  {
         URL baseUrl = new URL("https://readnovelfull.org");
         Integer noPages = ChapterUtils.getNoPages(baseUrl);
-        ChapterUtils cu = new ChapterUtils(baseUrl);
+        
         for (int i = 1; i <= noPages; i++) {
-            List<String> chaptersinPage = cu.getChaptersinPage(i);
+            List<String> chaptersinPage = ChapterUtils.getChaptersinPage(baseUrl,i);
             for (String chapterLink : chaptersinPage) {//esta es la parte que tenemos que hacer hilos
-                String name = chapterLink.substring(0, chapterLink.length()-1);
-                if(!ChapterManager.alreadyExist(name+".txt")){
-                    List<String> chapter = cu.getChapter(name);
-                    FileUtils.writeLines(new File(name+".txt"), chapter);//tambien necesitamos pasarlo a un pdf bonito que si den ganas de leer xD
-                    FileUtils.writeLines(new File(name+"_traslated.txt"), cu.translate("en", "es", chapter));
-                    System.out.println(name);
-                }
-                
+                ChapterThread t = new ChapterThread(baseUrl, chapterLink);
+                t.run();
             }
         }
 
