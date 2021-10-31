@@ -6,16 +6,14 @@
 package com.mycompany.pruebaslocas.Controller;
 
 import com.mycompany.pruebaslocas.Model.ChapterManager;
-import java.io.File;
 import java.net.URL;
 import java.util.List;
-import org.apache.commons.io.FileUtils;
 
 /**
  *
  * @author lgser
  */
-public class ChapterThread extends Thread{
+public class ChapterThread{
     private String chapterLink;
     private ChapterUtils cu;
     
@@ -24,7 +22,7 @@ public class ChapterThread extends Thread{
         this.chapterLink= chapterLink;
     }
     
-    public void run() {
+    public void getChapter() {
         String name = chapterLink.substring(0, chapterLink.length()-1);
         if(!ChapterManager.alreadyExist(name+".txt")){
                 List<String> chapter = cu.getChapter(name);

@@ -7,23 +7,12 @@ package com.mycompany.pruebaslocas;
 
 import com.mycompany.pruebaslocas.Controller.ChapterThread;
 import com.mycompany.pruebaslocas.Controller.ChapterUtils;
-import com.mycompany.pruebaslocas.Model.ChapterManager;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 
 /**
@@ -42,10 +31,11 @@ public class Main {
         
         for (int i = 1; i <= noPages; i++) {
             List<String> chaptersinPage = ChapterUtils.getChaptersinPage(baseUrl,i);
-            for (String chapterLink : chaptersinPage) {//esta es la parte que tenemos que hacer hilos
+            Stream<String> stream = StreamSupport.stream(chaptersinPage.spliterator(), true);
+            stream.forEach(chapterLink -> {
                 ChapterThread t = new ChapterThread(baseUrl, chapterLink);
-                t.run();
-            }
+                t.getChapter();
+            });
         }
 
 //        List<String> chapter = getChapter(baseUrl,"/my-vampire-system/chapter-32-a-lesson");
