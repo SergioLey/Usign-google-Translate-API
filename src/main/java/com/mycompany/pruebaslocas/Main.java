@@ -10,6 +10,7 @@ import com.mycompany.pruebaslocas.Controller.ChapterUtils;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -27,25 +28,25 @@ public class Main {
     
     public static void main(String[] args) throws MalformedURLException, IOException  {
         URL baseUrl = new URL("https://readnovelfull.org");
-        Integer noPages = ChapterUtils.getNoPages(baseUrl);
-        
-        for (int i = 1; i <= noPages; i++) {
-            List<String> chaptersinPage = ChapterUtils.getChaptersinPage(baseUrl,i);
-            Stream<String> stream = StreamSupport.stream(chaptersinPage.spliterator(), true);
-            stream.forEach(chapterLink -> {
-                ChapterThread t = new ChapterThread(baseUrl, chapterLink);
-                t.getChapter();
-            });
+        List<String> chaptersinPage = ChapterUtils.getChaptersinPage(baseUrl);
+        Comparator<String> nameComparator = (h1, h2) -> {
+            String[] s1 = h1.split("-");
+            String[] s2 = h2.split("-");
+            
+                Integer n1= Integer.parseInt(s1[3]);
+                Integer n2= Integer.parseInt(s2[3]);
+                return n1.compareTo(n2);};
+        chaptersinPage.sort(nameComparator);
+        Integer i = (int) chaptersinPage.size()/100;
+        for (int j = 0; j <= i; j++) {//.skip(100*i).limit(100)
+            int k= chaptersinPage.size()<(j+1)*100 ?  chaptersinPage.size() : (j+1)*100;
+            Stream<String> stream = StreamSupport.stream(chaptersinPage.subList(j*100, k).spliterator(), true);
+              stream.forEach(chapterLink -> {
+              ChapterThread t = new ChapterThread(baseUrl, chapterLink);
+              t.getChapter();
+        });
         }
-
-//        List<String> chapter = getChapter(baseUrl,"/my-vampire-system/chapter-32-a-lesson");
-//        FileUtils.writeLines(new File("/my-vampire-system/chapter-32-a-lesson.txt"), chapter);
-
-//        chapter.forEach(next -> {
-//            System.out.println(next);
-////            System.out.println(translate("en", "es",next));
-//        });
-
+        
     }
     
     

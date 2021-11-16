@@ -23,7 +23,7 @@ public class ChapterThread{
     }
     
     public void getChapter() {
-        String name = chapterLink.substring(0, chapterLink.length()-1);
+        String name = chapterLink;
         if(!ChapterManager.alreadyExist(name+".txt")){
                 List<String> chapter = cu.getChapter(name);
                 ChapterManager.Guardar(name+".txt", chapter);//tambien necesitamos pasarlo a un pdf bonito que si den ganas de leer xD
