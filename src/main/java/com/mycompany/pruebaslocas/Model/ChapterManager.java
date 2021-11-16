@@ -6,6 +6,11 @@
 package com.mycompany.pruebaslocas.Model;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 
 /**
  *
@@ -17,6 +22,14 @@ public class ChapterManager {
         File tempFile = new File(path);
         return tempFile.exists();
 
+    }
+    
+    public static void Guardar(String name, List<String> chapter){
+        try {
+            FileUtils.writeLines(new File(name), chapter);
+        } catch (IOException ex) {
+            Logger.getLogger(ChapterManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }

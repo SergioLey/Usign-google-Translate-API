@@ -27,8 +27,8 @@ import org.apache.commons.io.IOUtils;
  */
 public class ChapterUtils {
     final static private String NOVELA = "my-vampire-system"; 
-    final static private String TRANSALTE_URL = "your google translate api direction"; 
-    
+    final static private String TRANSALTE_URL = "https://script.google.com/macros/s/AKfycbxCaJAHskCPTW3KSR3fHuSJhlAlXqA3qUWp4acIyZ3LJe-SerzUuGJlkuKBo4ugUND8Qw/exec"; 
+
     private URL baseUrl;
 
     public ChapterUtils(URL baseUrl) {
@@ -58,8 +58,8 @@ public class ChapterUtils {
             return null;
     }
     
-    public List<String> getChaptersinPage(Integer page) throws MalformedURLException, IOException{
-        URL url = new URL(baseUrl,"/api/novels/"+NOVELA+"/chapters?page="+page);
+    public static List<String> getChaptersinPage(URL baseUrl) throws MalformedURLException, IOException{
+        URL url = new URL(baseUrl,"/api/novels/"+NOVELA+"/chapters?");
             URLConnection con = url.openConnection();
             String body;
             InputStream in = con.getInputStream();
@@ -70,8 +70,7 @@ public class ChapterUtils {
 
             List<String> chapters;
             List<String> chaptersLink = new ArrayList<>();
-                
-            chapters = new LinkedList<String>(Arrays.asList(body.replace("</li>", "").split("<li>")));
+            chapters = new LinkedList<String>(Arrays.asList(body.replace("</option>", "").split("<option")));
             if(!chapters.isEmpty())
                 chapters.remove(0);
                     
@@ -135,21 +134,25 @@ public class ChapterUtils {
         return IOUtils.toString(in, encoding);
     }
     
-    public List<String> translate(String langFrom, String langTo, List<String> chapter) throws IOException {
+    public List<String> translate(String langFrom, String langTo, List<String> chapter)  {
          List<String> result = new ArrayList<>();
          for (String string : chapter) {
              if(!string.isEmpty()){
-                 String  translated =translate(langFrom, langTo, string);
-                //ok thats all.... but what if something just going wrong?
-                Boolean badTranslation =  translated.contains("img alt=\"Google Apps Script\"");//google just send a error
-                int i = 0;
-                while(badTranslation){
-                    //just try n times more
-                    translated =translate(langFrom, langTo, string);
-                    badTranslation =  translated.contains("img alt=\"Google Apps Script\"")||i>3;
-                    i++;
-                }
-                result.add(translated.replace("&quot;", "\""));
+                 try {
+                     String  translated =translate(langFrom, langTo, string);
+                     //ok thats all.... but what if something just going wrong?
+                     Boolean badTranslation =  translated.contains("img alt=\"Google Apps Script\"");//google just send a error
+                     int i = 0;
+                     while(badTranslation){
+                         //just try n times more
+                         translated =translate(langFrom, langTo, string);
+                         badTranslation =  translated.contains("img alt=\"Google Apps Script\"")||i>3;
+                         i++;
+                     }
+                     result.add(translated.replace("&quot;", "\"").replace("&#39", "'"));
+                 } catch (IOException ex) {
+                     Logger.getLogger(ChapterUtils.class.getName()).log(Level.SEVERE, null, ex);
+                 }
              }
              
          }
